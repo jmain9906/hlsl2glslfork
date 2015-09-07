@@ -17,10 +17,12 @@ GlslFunction::GlslFunction( const std::string &n, const std::string &m, EGlslSym
 , depth(0)
 , inStatement(false)
 { 
-	active = new std::stringstream();
-	active->setf ( std::stringstream::showpoint );
+	active = new STRINGSTREAM();
+#ifndef CONFIG_USE_LITE_STRINGSTREAM
+	active->setf ( STRINGSTREAM::showpoint );
 	active->unsetf(std::ios::fixed);
 	active->unsetf(std::ios::scientific);
+#endif
 	active->precision (6);
 	pushDepth(0);
 }
@@ -94,7 +96,7 @@ void GlslFunction::addParameter (GlslSymbol *sym)
 
 std::string GlslFunction::getPrototype() const
 {
-	std::stringstream out;
+	STRINGSTREAM out;
 
 	writeType (out, returnType, structPtr, precision);
 	out << " " << name << "( ";

@@ -6,7 +6,9 @@
 #ifndef GLSL_COMMON_H
 #define GLSL_COMMON_H
 
+#ifndef CONFIG_USE_LITE_STRINGSTREAM
 #include <sstream>
+#endif
 
 #include "localintermediate.h"
 
@@ -104,7 +106,7 @@ private:
 
 
 /// Outputs the type of the symbol to the output buffer
-void writeType(std::stringstream &out, EGlslSymbolType type, const GlslStruct *s, TPrecision precision);
+void writeType(STRINGSTREAM &out, EGlslSymbolType type, const GlslStruct *s, TPrecision precision);
 
 const char *getTypeString( const EGlslSymbolType t );
 const char *getGLSLPrecisiontring (TPrecision prec);

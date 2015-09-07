@@ -50,7 +50,7 @@ public:
 	void pushDepth(int depth);
 	void popDepth();
 
-	void indent( std::stringstream &s ) { for (int ii = 0; ii < depth.back(); ii++) s << "    "; }
+	void indent( STRINGSTREAM &s ) { for (int ii = 0; ii < depth.back(); ii++) s << "    "; }
 	void indent() { indent(*active); }
 
 	void beginBlock( bool brace = true) { if (brace) *active << "{\n"; increaseDepth(); inStatement = false; }
@@ -67,8 +67,8 @@ public:
 	const std::string& getSemantic() const { return semantic; }    
 	GlslStruct* getStruct() { return structPtr; }   
 	void setStruct( GlslStruct *s ) { structPtr = s;}
-	void setActiveOutput(std::stringstream* output) { active = output; }
-	std::stringstream& getActiveOutput () { return *active; }
+	void setActiveOutput(STRINGSTREAM* output) { active = output; }
+	xSTRINGSTREAM& getActiveOutput () { return *active; }
 	const TSourceLoc& getLine() const { return line; }
 
 	typedef std::set<std::string> ExtensionSet;
@@ -106,7 +106,7 @@ private:
 	std::set<TOperator> libFunctions;
 
 	// Stores the active output of the function
-	std::stringstream* active;
+	STRINGSTREAM* active;
 
 	bool inStatement;
 };

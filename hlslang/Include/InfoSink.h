@@ -70,7 +70,10 @@ public:
 		// does not have a fractional part, the default precision format does
 		// not write the decimal portion which gets interpreted as integer by
 		// the compiler.
-		std::ostringstream stream;
+		xSTRINGSTREAM stream;
+#ifdef CONFIG_USE_LITE_STRINGSTREAM
+		stream << f;
+#else
 		if (fractionalPart(f) == 0.0f) {
 			stream.precision(1);
 			stream << std::showpoint << std::fixed << f;
@@ -80,6 +83,7 @@ public:
 			stream.precision(6);
 			stream << f;
 		}
+#endif
 		sink.append(stream.str());
 		return *this;
 	}
@@ -117,7 +121,7 @@ public:
    }
    void location(TSourceLoc loc)
    {
-      std::stringstream s;
+      xSTRINGSTREAM s;
       s << loc;
       append(s.str());
       append(": ");

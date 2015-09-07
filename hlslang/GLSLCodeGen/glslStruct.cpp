@@ -13,7 +13,7 @@ structType(st)
 
 std::string GlslStruct::getDecl() const
 {
-	std::stringstream out;
+	STRINGSTREAM out;
 	
 	out << "struct " << name << " {\n";
 	

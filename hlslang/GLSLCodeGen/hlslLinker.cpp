@@ -261,19 +261,19 @@ static inline const char* GetFragmentInputQualifier (ETargetVersion targetVersio
 	return targetVersion>=ETargetGLSL_ES_300 ? "in" : "varying";
 }
 
-static inline void AddVertexOutput (std::stringstream& s, ETargetVersion targetVersion, TPrecision prec, const std::string& type, const std::string& name)
+static inline void AddVertexOutput (STRINGSTREAM& s, ETargetVersion targetVersion, TPrecision prec, const std::string& type, const std::string& name)
 {
 	if (strstr (name.c_str(), kUserVaryingPrefix) == name.c_str())
 		s << GetVertexOutputQualifier(targetVersion) << " " << getGLSLPrecisiontring(prec) << type << " " << name << ";\n";
 }
 
-static inline void AddFragmentInput (std::stringstream& s, ETargetVersion targetVersion, TPrecision prec, const std::string& type, const std::string& name)
+static inline void AddFragmentInput (STRINGSTREAM& s, ETargetVersion targetVersion, TPrecision prec, const std::string& type, const std::string& name)
 {
 	if (strstr (name.c_str(), kUserVaryingPrefix) == name.c_str())
 		s << GetFragmentInputQualifier(targetVersion) << " " << getGLSLPrecisiontring(prec) << type << " " << name << ";\n";
 }
 
-static inline void AddToVaryings (std::stringstream& s, EShLanguage language, ETargetVersion targetVersion, TPrecision prec, const std::string& type, const std::string& name)
+static inline void AddToVaryings (STRINGSTREAM& s, EShLanguage language, ETargetVersion targetVersion, TPrecision prec, const std::string& type, const std::string& name)
 {
 	if (language == EShLangVertex)
 		AddVertexOutput(s, targetVersion, prec, type, name);
@@ -735,7 +735,7 @@ bool HlslLinker::addCalledFunctions( GlslFunction *func, FunctionSet& funcSet, s
 
 typedef std::vector<GlslFunction*> FunctionSet;
 
-static void EmitCalledFunctions (std::stringstream& shader, const FunctionSet& functions)
+static void EmitCalledFunctions (STRINGSTREAM& shader, const FunctionSet& functions)
 {
 	if (functions.empty())
 		return;
@@ -751,7 +751,7 @@ static void EmitCalledFunctions (std::stringstream& shader, const FunctionSet& f
 	}
 }
 
-static void EmitIfNotEmpty (std::stringstream& out, const std::stringstream& str)
+static void EmitIfNotEmpty (STRINGSTREAM& out, const STRINGSTREAM& str)
 {
 	if (str.str().size())
 		out << str.str() << "\n";
@@ -1040,7 +1040,7 @@ void HlslLinker::buildUniformReflection(const std::vector<GlslSymbol*>& constant
 }
 
 
-static void emitSymbolWithPad (std::stringstream& str, const std::string& ctor, const std::string& name, int pad)
+static void emitSymbolWithPad (STRINGSTREAM& str, const std::string& ctor, const std::string& name, int pad)
 {
 	str << ctor << "(" << name;
 	for (int i = 0; i < pad; ++i)
@@ -1049,7 +1049,7 @@ static void emitSymbolWithPad (std::stringstream& str, const std::string& ctor, 
 }
 
 
-static void emitSingleInputVariable (EShLanguage lang, ETargetVersion targetVersion, const std::string& name, const std::string& ctor, EGlslSymbolType type, TPrecision prec, std::stringstream& attrib, std::stringstream& varying)
+static void emitSingleInputVariable (EShLanguage lang, ETargetVersion targetVersion, const std::string& name, const std::string& ctor, EGlslSymbolType type, TPrecision prec, STRINGSTREAM& attrib, STRINGSTREAM& varying)
 {
 	// vertex shader: emit custom attributes
 	if (lang == EShLangVertex && strncmp(name.c_str(), "gl_", 3) != 0)
@@ -1076,7 +1076,7 @@ static void emitSingleInputVariable (EShLanguage lang, ETargetVersion targetVers
 }
 	
 
-void HlslLinker::emitInputNonStructParam(GlslSymbol* sym, EShLanguage lang, bool usePrecision, EAttribSemantic attrSem, std::stringstream& attrib, std::stringstream& varying, std::stringstream& preamble, std::stringstream& call)
+void HlslLinker::emitInputNonStructParam(GlslSymbol* sym, EShLanguage lang, bool usePrecision, EAttribSemantic attrSem, STRINGSTREAM& attrib, STRINGSTREAM& varying, STRINGSTREAM& preamble, STRINGSTREAM& call)
 {
 	std::string name, ctor;
 	int pad;
@@ -1118,7 +1118,7 @@ void HlslLinker::emitInputNonStructParam(GlslSymbol* sym, EShLanguage lang, bool
 
 
 // This function calls itself recursively if it finds structs in structs.
-bool HlslLinker::emitInputStruct(const GlslStruct* str, std::string parentName, EShLanguage lang, std::stringstream& attrib, std::stringstream& varying, std::stringstream& preamble)
+bool HlslLinker::emitInputStruct(const GlslStruct* str, std::string parentName, EShLanguage lang, STRINGSTREAM& attrib, STRINGSTREAM& varying, STRINGSTREAM& preamble)
 {
 	// process struct members
 	const int elem = str->memberCount();
@@ -1185,7 +1185,7 @@ bool HlslLinker::emitInputStruct(const GlslStruct* str, std::string parentName, 
 	return true;
 }
 
-void HlslLinker::emitInputStructParam(GlslSymbol* sym, EShLanguage lang, std::stringstream& attrib, std::stringstream& varying, std::stringstream& preamble, std::stringstream& call)
+void HlslLinker::emitInputStructParam(GlslSymbol* sym, EShLanguage lang, STRINGSTREAM& attrib, STRINGSTREAM& varying, STRINGSTREAM& preamble, STRINGSTREAM& call)
 {
 	GlslStruct* str = sym->getStruct();
 	assert(str);
@@ -1199,7 +1199,7 @@ void HlslLinker::emitInputStructParam(GlslSymbol* sym, EShLanguage lang, std::st
 }
 
 
-void HlslLinker::emitOutputNonStructParam(GlslSymbol* sym, EShLanguage lang, bool usePrecision, EAttribSemantic attrSem, std::stringstream& varying, std::stringstream& preamble, std::stringstream& postamble, std::stringstream& call)
+void HlslLinker::emitOutputNonStructParam(GlslSymbol* sym, EShLanguage lang, bool usePrecision, EAttribSemantic attrSem, STRINGSTREAM& varying, STRINGSTREAM& preamble, STRINGSTREAM& postamble, STRINGSTREAM& call)
 {
 	std::string name, ctor;
 	int pad;
@@ -1247,7 +1247,7 @@ void HlslLinker::emitOutputNonStructParam(GlslSymbol* sym, EShLanguage lang, boo
 }
 
 
-void HlslLinker::emitOutputStructParam(GlslSymbol* sym, EShLanguage lang, bool usePrecision, EAttribSemantic attrSem, std::stringstream& varying, std::stringstream& preamble, std::stringstream& postamble, std::stringstream& call)
+void HlslLinker::emitOutputStructParam(GlslSymbol* sym, EShLanguage lang, bool usePrecision, EAttribSemantic attrSem, STRINGSTREAM& varying, STRINGSTREAM& preamble, STRINGSTREAM& postamble, STRINGSTREAM& call)
 {
 	//structs must pass the struct, then process per element
 	GlslStruct *Struct = sym->getStruct();
@@ -1291,7 +1291,7 @@ void HlslLinker::emitOutputStructParam(GlslSymbol* sym, EShLanguage lang, bool u
 }
 
 
-void HlslLinker::emitMainStart(const HlslCrossCompiler* compiler, const EGlslSymbolType retType, GlslFunction* funcMain, unsigned options, bool usePrecision, std::stringstream& preamble, const std::vector<GlslSymbol*>& constants)
+void HlslLinker::emitMainStart(const HlslCrossCompiler* compiler, const EGlslSymbolType retType, GlslFunction* funcMain, unsigned options, bool usePrecision, STRINGSTREAM& preamble, const std::vector<GlslSymbol*>& constants)
 {
 	preamble << "void main() {\n";
 	
@@ -1313,10 +1313,10 @@ void HlslLinker::emitMainStart(const HlslCrossCompiler* compiler, const EGlslSym
 		const bool emit_both = emit_120_arrays && emit_old_arrays;
 		
 		if (emit_both)
-			preamble << "#if defined(HLSL2GLSL_ENABLE_ARRAY_120_WORKAROUND)" << std::endl;
+			preamble << "#if defined(HLSL2GLSL_ENABLE_ARRAY_120_WORKAROUND)" << ENDL;
 		preamble << arrayInit;
 		if (emit_both)
-			preamble << "\n#endif" << std::endl;
+			preamble << "\n#endif" << ENDL;
 	}
 	std::string matrixInit = compiler->m_DeferredMatrixInit.str();
 	if (!matrixInit.empty())
@@ -1339,7 +1339,7 @@ void HlslLinker::emitMainStart(const HlslCrossCompiler* compiler, const EGlslSym
 }
 
 // This function calls itself recursively if it finds structs in structs.
-bool HlslLinker::emitReturnStruct(GlslStruct *retStruct, std::string parentName, EShLanguage lang, std::stringstream& varying, std::stringstream& postamble)
+bool HlslLinker::emitReturnStruct(GlslStruct *retStruct, std::string parentName, EShLanguage lang, STRINGSTREAM& varying, STRINGSTREAM& postamble)
 {
 	const int elem = retStruct->memberCount();
 	for (int ii=0; ii<elem; ii++)
@@ -1403,7 +1403,7 @@ bool HlslLinker::emitReturnStruct(GlslStruct *retStruct, std::string parentName,
 	return true;
 }
 
-bool HlslLinker::emitReturnValue(const EGlslSymbolType retType, GlslFunction* funcMain, EShLanguage lang, std::stringstream& varying, std::stringstream& postamble)
+bool HlslLinker::emitReturnValue(const EGlslSymbolType retType, GlslFunction* funcMain, EShLanguage lang, STRINGSTREAM& varying, STRINGSTREAM& postamble)
 {
 	// void return type
 	if (retType == EgstVoid)
@@ -1558,12 +1558,12 @@ bool HlslLinker::link(HlslCrossCompiler* compiler, const char* entryFunc, ETarge
 	// That main function uses semantics on the arguments and return values to
 	// connect items appropriately.	
 	
-	std::stringstream attrib;
-	std::stringstream uniform;
-	std::stringstream preamble;
-	std::stringstream postamble;
-	std::stringstream varying;
-	std::stringstream call;
+	STRINGSTREAM attrib;
+	STRINGSTREAM uniform;
+	STRINGSTREAM preamble;
+	STRINGSTREAM postamble;
+	STRINGSTREAM varying;
+	STRINGSTREAM call;
 
 	markDuplicatedInSemantics(funcMain);
 
@@ -1656,7 +1656,7 @@ bool HlslLinker::link(HlslCrossCompiler* compiler, const char* entryFunc, ETarge
 		shaderPrefix << kTargetVersionStrings[targetVersion];
 		ExtensionSet::const_iterator it = m_Extensions.begin(), end = m_Extensions.end();
 		for (; it != end; ++it)
-			shaderPrefix << "#extension " << *it << " : require" << std::endl;
+			shaderPrefix << "#extension " << *it << " : require" << ENDL;
 	}
 
 	EmitIfNotEmpty (shader, uniform);

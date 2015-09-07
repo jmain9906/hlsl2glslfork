@@ -1,6 +1,8 @@
 #ifndef __SOURCELOC_H
 #define __SOURCELOC_H
 
+#include "include/Common.h"
+
 typedef struct 
 {
     const char* file;
@@ -19,10 +21,11 @@ extern const TSourceLoc gNullSourceLoc;
 #endif
 
 #ifdef __cplusplus
+#ifndef CONFIG_USE_LITE_STRINGSTREAM
 #include <sstream>
+#endif
 
 void SetLineNumber(TSourceLoc line, TSourceLoc& outLine);
-
 
 template<typename StreamType>
 StreamType& operator<<(StreamType& s, const TSourceLoc& l)
@@ -47,8 +50,9 @@ StreamType& operator<<(StreamType& s, const TSourceLoc& l)
     return(s);
 } 
 
-inline void OutputLineDirective(std::stringstream& s, const TSourceLoc& l)
+inline void OutputLineDirective(xSTRINGSTREAM& s, const TSourceLoc& l)
 {
+#ifndef CONFIG_DONT_OUTPUT_LINES
 	s << "#line " << l.line;
 	
 	// GLSL spec (1.10 & 1.20) doesn't allow printing file name here; only an integer "string number".
@@ -59,6 +63,7 @@ inline void OutputLineDirective(std::stringstream& s, const TSourceLoc& l)
 	//}
 	
 	s << '\n';
+#endif
 }
 
 #endif

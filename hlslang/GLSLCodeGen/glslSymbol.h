@@ -44,7 +44,7 @@ public:
 		kWriteDeclMutableDecl,
 		kWriteDeclMutableInit,
 	};
-	void writeDecl (std::stringstream& out, WriteDeclMode mode);
+	void writeDecl (STRINGSTREAM& out, WriteDeclMode mode);
 	/// Set the mangled name for the symbol
 	void mangleName();    
 

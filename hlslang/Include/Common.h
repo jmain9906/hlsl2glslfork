@@ -28,7 +28,70 @@
 #include <map>
 #include <string>
 #include <stdio.h>
-#include <sstream>
+#include <float.h>
+
+class litesstream {
+public:
+	void precision(int precision) {
+		this->_precision = precision;
+	}
+
+	std::string str() const {
+		return buf;
+	}
+
+	std::string buf;
+	int _precision = FLT_DIG;
+};
+
+inline litesstream& operator<<(litesstream& lh, const char& in) {
+	lh.buf += in;
+	return lh;
+}
+
+inline litesstream& operator<<(litesstream& lh, const int& in) {
+	char b[64];
+	snprintf(b, sizeof(lh.buf), "%d", in);
+	lh.buf += b;
+	return lh;
+}
+
+inline litesstream& operator<<(litesstream& lh, const unsigned int& in) {
+	char b[64];
+	snprintf(b, sizeof(lh.buf), "%u", in);
+	lh.buf += b;
+	return lh;
+}
+
+inline litesstream& operator<<(litesstream& lh, const float& in) {
+	char b[64];
+	snprintf(b, sizeof(lh.buf), "%.*f", lh._precision, in);
+	lh.buf += b;
+	return lh;
+}
+
+inline litesstream& operator<<(litesstream& lh, const std::string& in) {
+	lh.buf += in;
+	return lh;
+}
+
+inline litesstream& operator<<(litesstream& lh, const char* in) {
+	lh.buf += in;
+	return lh;
+}
+
+
+#ifdef CONFIG_USE_LITE_STRINGSTREAM
+	#define STRINGSTREAM litesstream
+	#define xSTRINGSTREAM litesstream
+	#define ENDL '\n'
+#else
+	#include <sstream>
+	#define STRINGSTREAM std::stringstream
+	#define xSTRINGSTREAM std::stringstream
+	#define ENDL std::endl
+#endif
+
 
 #include <assert.h>
 
@@ -58,6 +121,12 @@ inline TString* NewPoolTString(const char* s)
 {
    void* memory = GlobalPoolAllocator.allocate(sizeof(TString));
    return new(memory) TString(s);
+}
+
+
+inline litesstream& operator<<(litesstream& lh, const TString& in) {
+	lh.buf += in.c_str();
+	return lh;
 }
 
 //

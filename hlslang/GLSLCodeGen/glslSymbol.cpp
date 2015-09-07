@@ -398,7 +398,7 @@ GlslSymbol::GlslSymbol( const std::string &n, const std::string &s, const std::s
 
 
 
-void GlslSymbol::writeDecl (std::stringstream& out, WriteDeclMode mode)
+void GlslSymbol::writeDecl (STRINGSTREAM& out, WriteDeclMode mode)
 {
 	switch (qual)
 	{
@@ -427,7 +427,7 @@ void GlslSymbol::writeDecl (std::stringstream& out, WriteDeclMode mode)
 
 void GlslSymbol::mangleName()
 {
-	std::stringstream s;
+	STRINGSTREAM s;
 	mangleCounter++;
 	s << "_" << mangleCounter;
 	mangledName = name + s.str();

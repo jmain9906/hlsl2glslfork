@@ -6,7 +6,9 @@
 #ifndef HLSL_LINKER_H
 #define HLSL_LINKER_H
 
+#ifndef CONFIG_USE_LITE_STRINGSTREAM
 #include <sstream>
+#endif
 
 #include "../Include/Common.h"
 
@@ -73,24 +75,24 @@ private:
 	void emitStructs(HlslCrossCompiler* comp);
 	void emitGlobals(const GlslFunction* globalFunction, const std::vector<GlslSymbol*>& constants);
 	
-	void emitInputNonStructParam(GlslSymbol* sym, EShLanguage lang, bool usePrecision, EAttribSemantic attrSem, std::stringstream& attrib, std::stringstream& varying, std::stringstream& preamble, std::stringstream& call);
-	bool emitInputStruct(const GlslStruct* str, std::string parentName, EShLanguage lang, std::stringstream& attrib, std::stringstream& varying, std::stringstream& preamble);
-	void emitInputStructParam(GlslSymbol* sym, EShLanguage lang, std::stringstream& attrib, std::stringstream& varying, std::stringstream& preamble, std::stringstream& call);
-	void emitOutputNonStructParam(GlslSymbol* sym, EShLanguage lang, bool usePrecision, EAttribSemantic attrSem, std::stringstream& varying, std::stringstream& preamble, std::stringstream& postamble, std::stringstream& call);
-	void emitOutputStructParam(GlslSymbol* sym, EShLanguage lang, bool usePrecision, EAttribSemantic attrSem, std::stringstream& varying, std::stringstream& preamble, std::stringstream& postamble, std::stringstream& call);
-	void emitMainStart(const HlslCrossCompiler* compiler, const EGlslSymbolType retType, GlslFunction* funcMain, unsigned options, bool usePrecision, std::stringstream& preamble, const std::vector<GlslSymbol*>& constants);
-	bool emitReturnValue(const EGlslSymbolType retType, GlslFunction* funcMain, EShLanguage lang, std::stringstream& varying, std::stringstream& postamble);
-	bool emitReturnStruct(GlslStruct* retStruct, std::string parentName, EShLanguage lang, std::stringstream& varying, std::stringstream& postamble);
+	void emitInputNonStructParam(GlslSymbol* sym, EShLanguage lang, bool usePrecision, EAttribSemantic attrSem, STRINGSTREAM& attrib, STRINGSTREAM& varying, STRINGSTREAM& preamble, STRINGSTREAM& call);
+	bool emitInputStruct(const GlslStruct* str, std::string parentName, EShLanguage lang, STRINGSTREAM& attrib, STRINGSTREAM& varying, STRINGSTREAM& preamble);
+	void emitInputStructParam(GlslSymbol* sym, EShLanguage lang, STRINGSTREAM& attrib, STRINGSTREAM& varying, STRINGSTREAM& preamble, STRINGSTREAM& call);
+	void emitOutputNonStructParam(GlslSymbol* sym, EShLanguage lang, bool usePrecision, EAttribSemantic attrSem, STRINGSTREAM& varying, STRINGSTREAM& preamble, STRINGSTREAM& postamble, STRINGSTREAM& call);
+	void emitOutputStructParam(GlslSymbol* sym, EShLanguage lang, bool usePrecision, EAttribSemantic attrSem, STRINGSTREAM& varying, STRINGSTREAM& preamble, STRINGSTREAM& postamble, STRINGSTREAM& call);
+	void emitMainStart(const HlslCrossCompiler* compiler, const EGlslSymbolType retType, GlslFunction* funcMain, unsigned options, bool usePrecision, STRINGSTREAM& preamble, const std::vector<GlslSymbol*>& constants);
+	bool emitReturnValue(const EGlslSymbolType retType, GlslFunction* funcMain, EShLanguage lang, STRINGSTREAM& varying, STRINGSTREAM& postamble);
+	bool emitReturnStruct(GlslStruct* retStruct, std::string parentName, EShLanguage lang, STRINGSTREAM& varying, STRINGSTREAM& postamble);
 	
 private:
 	TInfoSink& infoSink;
 	
 	// GLSL string for additional extension prepropressor directives.
 	// This is used for version and extensions that expose built-in variables.
-	std::stringstream shaderPrefix;
+	STRINGSTREAM shaderPrefix;
 	
 	// GLSL string for generated shader
-	std::stringstream shader;
+	STRINGSTREAM shader;
 	
 	// Uniform list
 	std::vector<ShUniformInfo> uniforms;

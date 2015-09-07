@@ -22,7 +22,7 @@ bool UsePost120TextureLookups(ETargetVersion targetVersion) {
     }
 }
 
-void print_float (std::stringstream& out, float f)
+void print_float (STRINGSTREAM& out, float f)
 {
 	// Kind of roundabout way, but this is to satisfy two things:
 	// * MSVC and gcc-based compilers differ a bit in how they treat float
@@ -75,7 +75,7 @@ bool isShadowSampler(TBasicType t) {
 }
 
 TString buildArrayConstructorString(const TType& type) {
-	std::stringstream constructor;
+	STRINGSTREAM constructor;
 	constructor << getTypeString(translateType(&type))
 				<< '[' << type.getArraySize() << ']';
 
@@ -83,7 +83,7 @@ TString buildArrayConstructorString(const TType& type) {
 }
 
 
-static void writeConstantConstructor (std::stringstream& out, EGlslSymbolType t, TPrecision prec, TIntermConstant *c, const GlslStruct *structure = 0)
+static void writeConstantConstructor (STRINGSTREAM& out, EGlslSymbolType t, TPrecision prec, TIntermConstant *c, const GlslStruct *structure = 0)
 {
 	unsigned n_elems = getElements(t);
 	bool construct = n_elems > 1 || structure != 0;
@@ -136,7 +136,7 @@ static void writeConstantConstructor (std::stringstream& out, EGlslSymbolType t,
 void writeComparison( const TString &compareOp, const TString &compareCall, TIntermBinary *node, TGlslOutputTraverser* goit ) 
 {
    GlslFunction *current = goit->current;    
-   std::stringstream& out = current->getActiveOutput();
+   STRINGSTREAM& out = current->getActiveOutput();
    bool bUseCompareCall = false;
 
    // Determine whether we need the vector or scalar comparison function
@@ -210,7 +210,7 @@ void writeFuncCall( const TString &name, TIntermAggregate *node, TGlslOutputTrav
    TNodeArray::iterator sit;
    TNodeArray& nodes = node->getNodes(); 
    GlslFunction *current = goit->current;
-   std::stringstream& out = current->getActiveOutput();
+   STRINGSTREAM& out = current->getActiveOutput();
 
    current->beginStatement();
    
@@ -319,7 +319,7 @@ void TGlslOutputTraverser::outputLineDirective (const TSourceLoc& line)
 		return;
 	if (SafeEquals(line.file, m_LastLineOutput.file) && std::abs(line.line - m_LastLineOutput.line) < 4) // don't sprinkle too many #line directives ;)
 		return;
-	std::stringstream& out = current->getActiveOutput();
+	xSTRINGSTREAM& out = current->getActiveOutput();
 	out << '\n';
 	current->indent(); // without this we could dry the code out further to put the preceeding CRLF in the shared function
 	OutputLineDirective(out, line);
@@ -328,7 +328,7 @@ void TGlslOutputTraverser::outputLineDirective (const TSourceLoc& line)
 
 
 
-TGlslOutputTraverser::TGlslOutputTraverser(TInfoSink& i, std::vector<GlslFunction*> &funcList, std::vector<GlslStruct*> &sList, std::stringstream& deferredArrayInit, std::stringstream& deferredMatrixInit, ETargetVersion version, unsigned options)
+TGlslOutputTraverser::TGlslOutputTraverser(TInfoSink& i, std::vector<GlslFunction*> &funcList, std::vector<GlslStruct*> &sList, STRINGSTREAM& deferredArrayInit, STRINGSTREAM& deferredMatrixInit, ETargetVersion version, unsigned options)
 : infoSink(i)
 , generatingCode(true)
 , functionList(funcList)
@@ -369,7 +369,7 @@ void TGlslOutputTraverser::traverseArrayDeclarationWithInit(TIntermDeclaration* 
 {
 	assert(decl->containsArrayInitialization());
 	
-	std::stringstream* out = &current->getActiveOutput();
+	STRINGSTREAM* out = &current->getActiveOutput();
 	TType& type = *decl->getTypePointer();
 	EGlslSymbolType symbol_type = translateType(decl->getTypePointer());
 	
@@ -380,7 +380,7 @@ void TGlslOutputTraverser::traverseArrayDeclarationWithInit(TIntermDeclaration* 
 	if (emit_both)
 	{
 		current->indent(*out);
-		(*out) << "#if defined(HLSL2GLSL_ENABLE_ARRAY_120_WORKAROUND)" << std::endl;
+		(*out) << "#if defined(HLSL2GLSL_ENABLE_ARRAY_120_WORKAROUND)" << ENDL;
 		current->increaseDepth();
 	}
 	
@@ -402,7 +402,7 @@ void TGlslOutputTraverser::traverseArrayDeclarationWithInit(TIntermDeclaration* 
 		(*out) << " " << sym->getSymbol() << "[" << type.getArraySize() << "]";
 		current->endStatement();
 
-		std::stringstream* oldOut = out;
+		STRINGSTREAM* oldOut = out;
 		if (sym->isGlobal())
 		{
 			current->pushDepth(0);
@@ -441,7 +441,7 @@ void TGlslOutputTraverser::traverseArrayDeclarationWithInit(TIntermDeclaration* 
 	{
 		current->decreaseDepth();
 		current->indent(*out);
-		(*out) << "#else" << std::endl;
+		(*out) << "#else" << ENDL;
 		current->increaseDepth();
 	}
 	
@@ -471,7 +471,7 @@ void TGlslOutputTraverser::traverseArrayDeclarationWithInit(TIntermDeclaration* 
 	{
 		current->decreaseDepth();
 		current->indent(*out);
-		(*out) << "#endif" << std::endl;
+		(*out) << "#endif" << ENDL;
 	}
 }
 
@@ -481,7 +481,7 @@ bool TGlslOutputTraverser::traverseDeclaration(bool preVisit, TIntermDeclaration
 {
 	TGlslOutputTraverser* goit = static_cast<TGlslOutputTraverser*>(it);
 	GlslFunction *current = goit->current;
-	std::stringstream& out = current->getActiveOutput();
+	STRINGSTREAM& out = current->getActiveOutput();
 	
 	if (decl->containsArrayInitialization())
 	{
@@ -528,7 +528,7 @@ bool TGlslOutputTraverser::traverseDeclaration(bool preVisit, TIntermDeclaration
 			// then emit initialization for later until main().
 			if (type.getQualifier() != EvqUniform)
 			{
-				std::stringstream* oldOut = &out;
+				STRINGSTREAM* oldOut = &out;
 				current->pushDepth(0);
 				current->setActiveOutput(&goit->m_DeferredMatrixInit);
 
@@ -556,7 +556,7 @@ void TGlslOutputTraverser::traverseSymbol(TIntermSymbol *node, TIntermTraverser 
 {
 	TGlslOutputTraverser* goit = static_cast<TGlslOutputTraverser*>(it);
 	GlslFunction *current = goit->current;
-	std::stringstream& out = current->getActiveOutput();
+	STRINGSTREAM& out = current->getActiveOutput();
 
 	current->beginStatement();
 
@@ -639,7 +639,7 @@ void TGlslOutputTraverser::traverseConstant( TIntermConstant *node, TIntermTrave
 {
    TGlslOutputTraverser* goit = static_cast<TGlslOutputTraverser*>(it);
    GlslFunction *current = goit->current;
-   std::stringstream& out = current->getActiveOutput();
+   STRINGSTREAM& out = current->getActiveOutput();
    EGlslSymbolType type = translateType( node->getTypePointer());
    GlslStruct *str = 0;
 
@@ -682,7 +682,7 @@ void TGlslOutputTraverser::traverseImmediateConstant( TIntermConstant *c, TInter
 
 
 // Special case for matrix[idx1][idx2]: output as matrix[idx2][idx1]
-static bool Check2DMatrixIndex (TGlslOutputTraverser* goit, std::stringstream& out, TIntermTyped* left, TIntermTyped* right)
+static bool Check2DMatrixIndex (TGlslOutputTraverser* goit, STRINGSTREAM& out, TIntermTyped* left, TIntermTyped* right)
 {
 	if (left->isVector() && !left->isArray())
 	{
@@ -711,7 +711,7 @@ bool TGlslOutputTraverser::traverseBinary( bool preVisit, TIntermBinary *node, T
    TString op = "??";
    TGlslOutputTraverser* goit = static_cast<TGlslOutputTraverser*>(it);
    GlslFunction *current = goit->current;
-   std::stringstream& out = current->getActiveOutput();
+   STRINGSTREAM& out = current->getActiveOutput();
    bool infix = true;
    bool assign = false;
    bool needsParens = true;
@@ -1133,7 +1133,7 @@ bool TGlslOutputTraverser::traverseUnary( bool preVisit, TIntermUnary *node, TIn
    TString op("??");
    TGlslOutputTraverser* goit = static_cast<TGlslOutputTraverser*>(it);
    GlslFunction *current = goit->current;
-   std::stringstream& out = current->getActiveOutput();
+   STRINGSTREAM& out = current->getActiveOutput();
    bool funcStyle = false;
    bool prefix = true;
    char zero[] = "0";
@@ -1327,7 +1327,7 @@ bool TGlslOutputTraverser::traverseSelection( bool preVisit, TIntermSelection *n
 {
 	TGlslOutputTraverser* goit = static_cast<TGlslOutputTraverser*>(it);
 	GlslFunction *current = goit->current;
-	std::stringstream& out = current->getActiveOutput();
+	STRINGSTREAM& out = current->getActiveOutput();
 
 	current->beginStatement();
 
@@ -1397,7 +1397,7 @@ bool TGlslOutputTraverser::traverseAggregate( bool preVisit, TIntermAggregate *n
 {
    TGlslOutputTraverser* goit = static_cast<TGlslOutputTraverser*>(it);
    GlslFunction *current = goit->current;
-   std::stringstream& out = current->getActiveOutput();
+   STRINGSTREAM& out = current->getActiveOutput();
    int argCount = (int) node->getNodes().size();
    bool usePost120TextureLookups = UsePost120TextureLookups(goit->m_TargetVersion); 
 
@@ -1770,7 +1770,7 @@ bool TGlslOutputTraverser::traverseLoop( bool preVisit, TIntermLoop *node, TInte
 {
    TGlslOutputTraverser* goit = static_cast<TGlslOutputTraverser*>(it);
    GlslFunction *current = goit->current;
-   std::stringstream& out = current->getActiveOutput();
+   STRINGSTREAM& out = current->getActiveOutput();
 
    current->beginStatement();
 
@@ -1823,7 +1823,7 @@ bool TGlslOutputTraverser::traverseBranch( bool preVisit, TIntermBranch *node,  
 {
    TGlslOutputTraverser* goit = static_cast<TGlslOutputTraverser*>(it);
    GlslFunction *current = goit->current;
-   std::stringstream& out = current->getActiveOutput();
+   STRINGSTREAM& out = current->getActiveOutput();
 
    current->beginStatement();
 
@@ -1854,7 +1854,7 @@ GlslStruct *TGlslOutputTraverser::createStructFromType (TType *type)
    //check for anonymous structures
    if (structName.size() == 0)
    {
-      std::stringstream temp;
+      STRINGSTREAM temp;
       TTypeList &tList = *type->getStruct();
 
       //build a mangled name that is hopefully mangled enough to prevent collisions

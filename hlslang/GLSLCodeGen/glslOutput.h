@@ -6,7 +6,9 @@
 #ifndef GLSL_OUTPUT_H
 #define GLSL_OUTPUT_H
 
+#ifndef CONFIG_USE_LITE_STRINGSTREAM
 #include <sstream>
+#endif
 
 #include "localintermediate.h"
 #include "glslCommon.h"
@@ -34,7 +36,7 @@ private:
 	void traverseArrayDeclarationWithInit(TIntermDeclaration* decl);
 
 public:
-	TGlslOutputTraverser (TInfoSink& i, std::vector<GlslFunction*> &funcList, std::vector<GlslStruct*> &sList, std::stringstream& deferredArrayInit, std::stringstream& deferredMatrixInit, ETargetVersion version, unsigned options);
+	TGlslOutputTraverser (TInfoSink& i, std::vector<GlslFunction*> &funcList, std::vector<GlslStruct*> &sList, STRINGSTREAM& deferredArrayInit, STRINGSTREAM& deferredMatrixInit, ETargetVersion version, unsigned options);
 	GlslStruct *createStructFromType( TType *type );
 	
 	// Info Sink
@@ -62,9 +64,9 @@ public:
 	std::vector<int> indexList;
 	
 	// Code to initialize global arrays when we can't use GLSL 1.20+ syntax
-	std::stringstream& m_DeferredArrayInit;
+	STRINGSTREAM& m_DeferredArrayInit;
 	// Code to initialize global matrices when we can't use GLSL 1.20+ syntax
-	std::stringstream& m_DeferredMatrixInit;
+	STRINGSTREAM& m_DeferredMatrixInit;
 
 	TSourceLoc m_LastLineOutput;
 	unsigned swizzleAssignTempCounter;

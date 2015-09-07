@@ -13,9 +13,11 @@
 #include "Initialize.h"
 
 #include "SymbolTable.h"
+#ifndef CONFIG_USE_LITE_STRINGSTREAM
 #include <sstream>
+#endif
 
-static void appendMatrixType(std::stringstream& ss, unsigned rows, unsigned cols)
+static void appendMatrixType(STRINGSTREAM& ss, unsigned rows, unsigned cols)
 {
     ss << "float";
     if (rows > 1 && cols > 1)
@@ -393,7 +395,7 @@ void TBuiltIns::initialize()
       {
           for (unsigned rows = 1; rows <= 4; ++rows)
           {
-              std::stringstream ss;
+              STRINGSTREAM ss;
               appendMatrixType(ss, rows, cols);
               ss << " mul(float x, ";
               appendMatrixType(ss, rows, cols);
